@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jose Duenas-Lopez</title>
+
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --fg: #ffffff;
+      --muted: #9ca3af;
+      --card: #141414;
+      --accent: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+      text-align: center;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .photo {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .icons {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .icon.active {
+      color: var(--accent);
+      transform: scale(1.25);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+    }
+
+    .icon:hover {
+      color: var(--fg);
+    }
+
+    .subtitle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="name"></h1>
+
+    <div class="photo">
+      <img id="photo" src="" alt="profile" />
+    </div>
+
+    <div class="icons" id="icons"></div>
+
+    <div class="subtitle" id="subtitle"></div>
+  </div>
+
+  <script>
+    const identities = [
+{
+  id: "gmail",
+  name: "duenaslj",
+  subtitle: "Gmail",
+  icon: "fa-envelope",
+  iconStyle: "fa-solid",
+  link: "mailto:duenaslj@brto.net",
+  image: "/images/gmail.jpg"
+},
+{
+  id: "linkedin",
+  name: "2LT Dueñas-Lopez",
+  subtitle: "LinkedIn",
+  icon: "fa-linkedin-in",
+  iconStyle: "fa-brands",
+  link: "https://linkedin.com/in/duenaslj",
+  image: "/images/linkedin.jpg"
+},
+{
+  id: "github",
+  name: "burritoblankets",
+  subtitle: "GitHub",
+  icon: "fa-github",
+  iconStyle: "fa-brands",
+  link: "https://github.com/burritoblankets",
+  image: "/images/github.png"
+},
+{
+  id: "instagram",
+  name: "Pillo",
+  subtitle: "Instagram",
+  icon: "fa-instagram",
+  iconStyle: "fa-brands",
+  link: "https://instagram.com/3urrito3lankets",
+  image: "/images/instagram.webp"
+}
+    ];
+
+    const nameEl = document.getElementById("name");
+    const photoEl = document.getElementById("photo");
+    const subtitleEl = document.getElementById("subtitle");
+    const iconsEl = document.getElementById("icons");
+
+    let active = 0;
+    let timer;
+
+    function render(index) {
+      const item = identities[index];
+      nameEl.style.opacity = 0;
+      photoEl.style.opacity = 0;
+
+      setTimeout(() => {
+        nameEl.textContent = item.name;
+        photoEl.src = item.image;
+subtitleEl.innerHTML = `<i class="${item.iconStyle} ${item.icon}"></i> ${item.subtitle}`;
+
+        document.querySelectorAll('.icon').forEach((el, i) => {
+          el.classList.toggle('active', i === index);
+        });
+
+        nameEl.style.opacity = 1;
+        photoEl.style.opacity = 1;
+      }, 200);
+    }
+
+    function start() {
+      timer = setInterval(() => {
+        active = (active + 1) % identities.length;
+        render(active);
+      }, 5000);
+    }
+
+    function stop() {
+      clearInterval(timer);
+    }
+
+    identities.forEach((item, idx) => {
+      const a = document.createElement('a');
+      a.href = item.link;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+
+      const div = document.createElement('div');
+      div.className = 'icon';
+div.innerHTML = `<i class="${item.iconStyle} ${item.icon}"></i>`;
+
+      div.addEventListener('mouseenter', () => {
+        stop();
+        active = idx;
+        render(active);
+      });
+
+      div.addEventListener('mouseleave', start);
+
+      a.appendChild(div);
+      iconsEl.appendChild(a);
+    });
+
+    render(active);
+    start();
+  </script>
+</body>
+</html>
